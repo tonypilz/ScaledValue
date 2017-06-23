@@ -41,8 +41,8 @@ int main() {
     using namespace sv;
     
     //define values on different scales
-    ScaledValue<std::nano>  seconds_a{500}; // represents 5 nanoseconds
-    ScaledValue<std::micro> seconds_b{9}; // represents 9 microseconds
+    auto seconds_a = ScaledValue<std::nano>{500}; // represents 5 nanoseconds
+    auto seconds_b = ScaledValue<std::micro>{9};  // represents 9 microseconds
 
     //combination
     auto seconds_c = seconds_a + seconds_b;
