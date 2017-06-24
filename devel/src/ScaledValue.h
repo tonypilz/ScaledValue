@@ -2,8 +2,6 @@
 
 namespace sv {
 
-
-
 template<typename ScaleRatio, typename TArithmetic = double>
 class ScaledValue {
 
@@ -15,6 +13,7 @@ public:
     using classtype = ScaledValue<ScaleRatio, TArithmetic>;
     using value_type = TArithmetic;
 
+    constexpr ScaledValue():m_value(0){}
     constexpr ScaledValue(value_type const& v):m_value(v){}
     constexpr ScaledValue(classtype const& v):m_value(v.m_value){}
 

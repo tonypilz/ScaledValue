@@ -116,11 +116,11 @@ namespace T5
     using B = ScaledValue<std::ratio<-8,9>>;
     using C = ScaledValue<std::ratio< 8,9>>;
 
-    static_assert(math::abs(A{-2})==A{2},"");
-    static_assert(math::abs(A{2})==A{2},"");
+    static_assert(abs(A{-2})==A{2},"");
+    static_assert(abs(A{2})==A{2},"");
 
-    static_assert(math::abs(B{-2})==C{2},"");
-    static_assert(math::abs(B{ 2})==C{2},"");
+    static_assert(abs(B{-2})==C{2},"");
+    static_assert(abs(B{ 2})==C{2},"");
 
 }
 void print_test(){
@@ -173,23 +173,67 @@ void math_test()
      using A = ScaledValue<std::ratio<10,2>>;
 
     {
-        const bool b = (math::sqrt(A{5}) == A{1});
+        const bool b = (sqrt(A{5}) == A{1});
         assert(b);
     }
 
     {
-        const bool b = (math::pow(A{5},3.0) == A{5}*A{5}*A{5});
+        const bool b = (pow(A{5},3.0) == A{5}*A{5}*A{5});
         assert(b);
     }
 }
+
+void example(){
+
+
+//    //define values on different scales
+//    auto seconds_a = ScaledValue<std::nano>{500}; // represents 5 nanoseconds
+//    auto seconds_b = ScaledValue<std::micro>{9};  // represents 9 microseconds
+
+//    //combine them
+//    auto seconds_c = seconds_a + seconds_b;
+//    auto seconds_d = seconds_a * seconds_b;
+//    bool greater = seconds_a > seconds_b; //greater==false
+
+//    //apply math operations
+//    auto seconds_e = pow(seconds_b,0.5);
+
+//    //conversions
+//    auto seconds_f = ScaledValue<std::nano>{seconds_b};
+
+//    //printing
+//    std::cout<< seconds_b <<std::endl; // prints "7*micro"
+//    std::cout<< seconds_c <<std::endl; // prints "7500*nano"
+//    std::cout<< seconds_d <<std::endl; // prints "0.0035*nano"
+//    std::cout<< seconds_e <<std::endl; // prints "2645.75*micro" // see *
+//    std::cout<< seconds_f <<std::endl; // prints "7000*nano"
+
+//    std::cout<<  ScaledValue<std::micro>{ScaledValue<std::ratio<1>>{0.00264575131}} << std::endl;
+}
+
+void ctor_prob(){
+
+//    using A = ScaledValue<std::ratio<10,2>>;
+
+//    //using sqrt;
+//    using namespace math;
+
+//    sqrt(A{5});
+
+
+}
 TestMain::TestMain()
 {
+    ctor_prob();
     print_test();
     complex_test();
+    example();
 
     //std::cout<<(  ScaledValue<std::milli>{13}) << "\n";
 
     ScaledQuantitlyTest{};
+
+
 }
 
 }
