@@ -52,6 +52,12 @@ operator-(ScaledValue<LScale, LTValue> const& l,
                                         l.value() - (r.value()*LScale::den*RScale::num)/(LScale::num*RScale::den)};
 }
 
+template< typename S, typename T>
+constexpr ScaledValue<S, T>
+operator-(ScaledValue<S, T> const& l)
+{
+    return ScaledValue<S, T>{-l.value()};
+}
 
 template< typename LScale, typename LTValue,
           typename RScale, typename RTValue>

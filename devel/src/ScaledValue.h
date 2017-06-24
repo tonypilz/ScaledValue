@@ -15,12 +15,13 @@ public:
 
     constexpr ScaledValue():m_value(0){}
     constexpr ScaledValue(value_type const& v):m_value(v){}
-    constexpr ScaledValue(classtype const& v):m_value(v.m_value){}
+    constexpr ScaledValue(classtype const&) = default;
+    constexpr ScaledValue(classtype &&) = default;
 
     template<typename S, typename V>
     constexpr ScaledValue(ScaledValue<S, V> const& other):m_value((other.m_value*S::num*scale::den)/(S::den*scale::num)){}
 
-    classtype operator=(classtype const& v){ m_value = v.m_value; return *this;}
+    classtype& operator=(classtype const& v) = default;
 
     constexpr value_type value()const{return m_value;}
     void setValue(classtype const& v){m_value = v.m_value;}
