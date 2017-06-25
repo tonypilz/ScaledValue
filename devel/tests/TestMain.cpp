@@ -32,7 +32,7 @@ namespace T1
     using B = ScaledValue<std::ratio<8,9>>;
     static_assert(A{4}+B{30} == A{(4.0*5/6 + 30.0*8/9)*6/5},"");
     static_assert(A{4}-B{30} == A{(4.0*5/6 - 30.0*8/9)*6/5},"");
-    //static_assert(A{B{3}} == A{3.0*8/9*6/5},"");
+    static_assert(A{B{3}} == A{3.0*8/9*6/5},"");
 }
 
 namespace T1a
@@ -190,6 +190,87 @@ void complex_test()
 
         assert(b);
     }
+
+    {
+        const bool b = (ScaledValue<std::ratio<5,6>,C>{C{1,2}} +
+                        ScaledValue<std::ratio<7,8>,C>{C{5}}) ==
+                ScaledValue<std::ratio<5,6>,C>{C{(1.0*5/6+5.0*7/8)*6.0/5,
+                                                 (2.0*5/6+0.0*7/8)*6.0/5}};
+
+        assert(b);
+    }
+
+    {
+        const bool b = (ScaledValue<std::ratio<5,6>,C>{C{1,2}} -
+                        ScaledValue<std::ratio<7,8>,double>{5}) ==
+                ScaledValue<std::ratio<5,6>,C>{C{(1.0*5/6-5.0*7/8)*6.0/5,
+                                                 (2.0*5/6-0.0*7/8)*6.0/5}};
+
+        assert(b);
+    }
+
+    {
+        const bool b = (ScaledValue<std::ratio<5,6>,C>{C{1,2}} -
+                        ScaledValue<std::ratio<7,8>,C>{C{5}}) ==
+                ScaledValue<std::ratio<5,6>,C>{C{(1.0*5/6-5.0*7/8)*6.0/5,
+                                                 (2.0*5/6-0.0*7/8)*6.0/5}};
+
+        assert(b);
+    }
+
+    {
+        const bool b = (ScaledValue<std::ratio<5,6>,C>{C{1,2}} *
+                        ScaledValue<std::ratio<7,8>,double>{5}) ==
+                ScaledValue<std::ratio<5,6>,C>{C{(1.0*5.0*7/8),
+                                                 (2.0*5.0*7/8)}};
+
+        assert(b);
+    }
+
+    {
+        const bool b = (ScaledValue<std::ratio<5,6>,C>{C{1,2}} *
+                        ScaledValue<std::ratio<7,8>,C>{C{5}}) ==
+                ScaledValue<std::ratio<5,6>,C>{C{(1.0*5.0*7/8),
+                                                 (2.0*5.0*7/8)}};
+
+        assert(b);
+    }
+
+
+    {
+         (ScaledValue<std::ratio<5,6>,C>{C{1,2}} /
+                        ScaledValue<std::ratio<7,8>,double>{5}); //just see if it compiles
+    }
+
+
+    {
+         (ScaledValue<std::ratio<5,6>,C>{C{1,2}} /
+                        ScaledValue<std::ratio<7,8>,C>{5}); //just see if it compiles
+    }
+
+
+    {
+        const bool b =  abs(ScaledValue<std::ratio<-5,6>,C>{C{-3,4}})
+                          ==ScaledValue<std::ratio<5,6>,double>{5};
+
+        assert(b);
+    }
+
+    {
+        const bool b =  sqrt(ScaledValue<std::ratio<5,6>,C>{C{3.0*6/5,4.0*6/5}})
+                           ==ScaledValue<std::ratio<5,6>,C>{C{2.0*6/5,1.0*6/5}};
+
+        assert(b);
+    }
+
+    {
+        const bool b = pow(ScaledValue<std::ratio<5,6>,C>{C{3.0*6/5,4.0*6/5}},C{0.5}) ==
+                sqrt(ScaledValue<std::ratio<5,6>,C>{C{3.0*6/5,4.0*6/5}});
+
+        assert(b);
+    }
+
+
 }
 
 void math_test()

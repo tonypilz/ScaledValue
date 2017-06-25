@@ -46,12 +46,12 @@ template<> inline std::ostream& printRatio<std::exa>(std::ostream& s, const char
 
 }
 
-template<typename S, typename V, typename U>
-std::ostream& operator<<(std::ostream& s, ScaledValue<S,V,U> const& v){
+template<typename S, typename V>
+std::ostream& operator<<(std::ostream& s, ScaledValue<S,V> const& v){
 
     s << v.unscaledValue();
 
-    printRatio<typename ScaledValue<S,V,U>::scale>(s,"*","");
+    printRatio<typename ScaledValue<S,V>::scale>(s,"*","");
 
     return s;
 }
