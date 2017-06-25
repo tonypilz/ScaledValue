@@ -17,22 +17,33 @@
 namespace sv {
 namespace tests {
 
-using SV1 = ScaledValue<std::kilo>;
-using SV2 = ScaledValue<std::deci>;
+namespace T0
+{
+    using SV1 = ScaledValue<std::kilo>;
+    using SV2 = ScaledValue<std::deci>;
 
-static_assert( SV1{5} * SV2{3} == SV1{1.5},"");
-static_assert( SV1{5} / SV2{4} == SV1{12.5},"");
+    static_assert( SV1{5} * SV2{3} == SV1{1.5},"");
+    static_assert( SV1{5} / SV2{4} == SV1{12.5},"");
+}
 
 namespace T1
 {
-    //(4*5/6 + 30*8/9)*6/5 == 36
-    //(4*5/6 - 30*8/9)*6/5 == 28
     using A = ScaledValue<std::ratio<5,6>>;
     using B = ScaledValue<std::ratio<8,9>>;
     static_assert(A{4}+B{30} == A{(4.0*5/6 + 30.0*8/9)*6/5},"");
     static_assert(A{4}-B{30} == A{(4.0*5/6 - 30.0*8/9)*6/5},"");
-    static_assert(A{B{3}} == A{3.0*8/9*6/5},"");
+    //static_assert(A{B{3}} == A{3.0*8/9*6/5},"");
 }
+
+namespace T1a
+{
+    using A = ScaledValue<std::ratio<5,6>>;
+    using B = ScaledValue<std::ratio<8,9>,int>;
+    static_assert(A{4}+B{30} == A{(4.0*5/6 + 30.0*8/9)*6/5},"");
+    static_assert(A{4}-B{30} == A{(4.0*5/6 - 30.0*8/9)*6/5},"");
+    //static_assert(A{B{3}} == A{3.0*8/9*6/5},"");
+}
+
 
 namespace T2 {
     constexpr ScaledValue<std::ratio<2,5>,long long> a{13}; //5.2
@@ -123,6 +134,19 @@ namespace T5
     static_assert(abs(B{ 2})==C{2},"");
 
 }
+
+//namespace T6
+//{
+//    using A = ScaledValue<std::ratio<5,6>>;
+//    using B = ScaledValue<std::ratio<8,9>>;
+//    static_assert(A{4}+B{30} == A{(4.0*5/6 + 30.0*8/9)*6/5},"");
+//    static_assert(A{4}-B{30} == A{(4.0*5/6 - 30.0*8/9)*6/5},"");
+//    static_assert(A{B{3}} == A{3.0*8/9*6/5},"");
+
+//    static_assert(A{4}*30.0 == A{(4.0*5/6 * 30.0*1/1)*6/5},"");
+//}
+
+
 void print_test(){
 
     {
@@ -228,8 +252,10 @@ TestMain::TestMain()
     print_test();
     complex_test();
     example();
+    using B = ScaledValue<std::ratio<8,9>,int>;
+    using A = ScaledValue<std::ratio<5,6>>;
+    std::cout<< "xxx " << ( A{B{3}} ) << "  " << A{3.0*8/9*6/5}<<  "\n";
 
-    //std::cout<<(  ScaledValue<std::milli>{13}) << "\n";
 
     ScaledQuantitlyTest{};
 

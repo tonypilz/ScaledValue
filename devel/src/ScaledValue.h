@@ -1,67 +1,87 @@
 #pragma once
 
+#include <ratio>
+
 namespace sv {
 
-template<typename ScaleRatio, typename TArithmetic = double>
+
+
+template<typename ScaleRatio, typename TrueValueType = double, typename UnscaledValueType = TrueValueType>
 class ScaledValue {
 
-    template<typename , typename> friend class ScaledValue;
+    template<typename , typename, typename> friend class ScaledValue;
 
 public:
 
-    using scale = ScaleRatio;
-    using classtype = ScaledValue<ScaleRatio, TArithmetic>;
-    using value_type = TArithmetic;
+    // true_value == unscaled_value * scale::num / scale::den
 
-    constexpr ScaledValue():m_value(0){}
-    constexpr ScaledValue(value_type const& v):m_value(v){}
+    using scale = ScaleRatio;
+    using classtype = ScaledValue<ScaleRatio, TrueValueType, UnscaledValueType>;
+    using true_value_type = TrueValueType;
+    using unscaled_value_type = UnscaledValueType;
+
+    template<typename OtherScale>
+    using p_scale = std::ratio_multiply<scale,OtherScale>;
+    template<typename OtherScale>
+    using q_scale = std::ratio_divide<scale,OtherScale>;
+
+    constexpr ScaledValue():m_unscaled_value(0){}
+    constexpr ScaledValue(unscaled_value_type const& v):m_unscaled_value(v){} //delayed rescaling
     constexpr ScaledValue(classtype const&) = default;
     constexpr ScaledValue(classtype &&) = default;
 
     template<typename S, typename V>
-    constexpr ScaledValue(ScaledValue<S, V> const& other):m_value((other.m_value*S::num*scale::den)/(S::den*scale::num)){}
+    constexpr ScaledValue(ScaledValue<S, V> const& other):m_unscaled_value((other.m_unscaled_value*q_scale<S>::num)/(q_scale<S>::den)){}
 
     classtype& operator=(classtype const& v) = default;
 
-    constexpr value_type value()const{return m_value;}
-    void setValue(classtype const& v){m_value = v.m_value;}
+    constexpr true_value_type trueValue()const{return static_cast<true_value_type>((m_unscaled_value*scale::num)/scale::den);}
 
-    template<typename S, typename V>
-    classtype& operator+=(ScaledValue<S, V> const& r){
+    constexpr unscaled_value_type unscaledValue()const{return m_unscaled_value;}
 
-        m_value += r.m_value*scale::den*S::num/scale::num/S::den;
+    void setTrueValue(true_value_type const& v){ m_unscaled_value = static_cast<UnscaledValueType>((v * scale::den)/scale::num); }
+    void setUnscaledValue(unscaled_value_type const& v){m_unscaled_value = v;}
+
+
+    template<typename S, typename V, typename U>
+    classtype& operator+=(ScaledValue<S, V, U> const& r){
+
+        m_unscaled_value += r.m_unscaled_value*scale::den*S::num/scale::num/S::den;
         return *this;
     }
 
-    template<typename S, typename V>
-    classtype& operator-=(ScaledValue<S, V> const& r){
+    template<typename S, typename V, typename U>
+    classtype& operator-=(ScaledValue<S, V, U> const& r){
 
-        m_value -= r.m_value*scale::den*S::num/scale::num/S::den;
+        m_unscaled_value -= r.m_unscaled_value*scale::den*S::num/scale::num/S::den;
 
         return *this;
     }
 
-    template<typename S, typename V>
-    classtype& operator*=(ScaledValue<S, V> const& r){
+    template<typename S, typename V, typename U>
+    classtype& operator*=(ScaledValue<S, V, U> const& r){
 
-        m_value *= r.m_value*S::num/S::den;
+        m_unscaled_value *= r.m_unscaled_value*S::num/S::den;
 
         return *this;
 }
 
-    template<typename S, typename V>
-    classtype& operator/=(ScaledValue<S, V> const& r){
+    template<typename S, typename V, typename U>
+    classtype& operator/=(ScaledValue<S, V, U> const& r){
 
-        m_value /= r.m_value*S::num/S::den;
+        m_unscaled_value /= r.m_unscaled_value*S::num/S::den;
 
         return *this;
     }
 
+
 private:
 
 
-    value_type m_value; //is always relative to scale, to get unscaled value ScaleRatio<std::ratio<1>>(scaled).value();
+    unscaled_value_type m_unscaled_value; //is always relative to scale, to get unscaled value ScaleRatio<std::ratio<1>>(scaled).value();
 };
+
+
 
 }
 

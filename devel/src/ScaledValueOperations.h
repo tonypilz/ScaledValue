@@ -1,125 +1,135 @@
 #pragma once
 
 #include "ScaledValue.h"
+#include <ratio>
 
 namespace sv {
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr auto
-operator*(ScaledValue<LScale, LTValue> const& l,
-          ScaledValue<RScale, RTValue> const& r)
-        -> ScaledValue<LScale, decltype((l.value()*r.value()*RScale::num)/RScale::den)>
+operator*(ScaledValue<LS, LV, LU> const& l,
+          ScaledValue<RS, RV, RU> const& r)
+        -> ScaledValue<LS, LV, decltype((l.unscaledValue()*r.unscaledValue()*RS::num)/RS::den)>
 {
-    return ScaledValue<LScale, decltype((l.value()*r.value()*RScale::num)/RScale::den)>{
-                                        (l.value()*r.value()*RScale::num)/RScale::den};
+    return ScaledValue<LS, LV, decltype((l.unscaledValue()*r.unscaledValue()*RS::num)/RS::den)>{
+                                        (l.unscaledValue()*r.unscaledValue()*RS::num)/RS::den};
 }
 
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+
+
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr auto
-operator/(ScaledValue<LScale, LTValue> const& l,
-          ScaledValue<RScale, RTValue> const& r)
--> ScaledValue<LScale, decltype((l.value()*(RScale::num*RScale::den))/r.value())>
+operator/(ScaledValue<LS, LV, LU> const& l,
+          ScaledValue<RS, RV, RU> const& r)
+        -> ScaledValue<LS, LV, decltype((l.unscaledValue()*(RS::num*RS::den))/r.unscaledValue())>
 {
-    return ScaledValue<LScale,
-                      decltype((l.value()*(RScale::num*RScale::den))/r.value())>{
-                               (l.value()*(RScale::num*RScale::den))/r.value()};
+    return ScaledValue<LS, LV, decltype((l.unscaledValue()*(RS::num*RS::den))/r.unscaledValue())>{
+                                        (l.unscaledValue()*(RS::num*RS::den))/r.unscaledValue()};
 }
 
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr auto
-operator+(ScaledValue<LScale, LTValue> const& l,
-          ScaledValue<RScale, RTValue> const& r)
-        -> ScaledValue<LScale, decltype(l.value() + (r.value()*LScale::den*RScale::num)/(LScale::num*RScale::den))>
+operator+(ScaledValue<LS, LV, LU> const& l,
+          ScaledValue<RS, RV, RU> const& r)
+        -> ScaledValue<LS, LV, decltype(l.unscaledValue() + (r.unscaledValue()*LS::den*RS::num)/(LS::num*RS::den))>
 {
-    return ScaledValue<LScale, decltype(l.value() + (r.value()*LScale::den*RScale::num)/(LScale::num*RScale::den))>{
-                                        l.value() + (r.value()*LScale::den*RScale::num)/(LScale::num*RScale::den)};
+    return ScaledValue<LS, LV, decltype(l.unscaledValue() + (r.unscaledValue()*LS::den*RS::num)/(LS::num*RS::den))>{
+                                        l.unscaledValue() + (r.unscaledValue()*LS::den*RS::num)/(LS::num*RS::den)};
 }
 
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr auto
-operator-(ScaledValue<LScale, LTValue> const& l,
-          ScaledValue<RScale, RTValue> const& r)
-        -> ScaledValue<LScale, decltype(l.value() - (r.value()*LScale::den*RScale::num)/(LScale::num*RScale::den))>
+operator-(ScaledValue<LS, LV, LU> const& l,
+          ScaledValue<RS, RV, RU> const& r)
+        -> ScaledValue<LS, LV, decltype(l.unscaledValue() - (r.unscaledValue()*LS::den*RS::num)/(LS::num*RS::den))>
 {
-    return ScaledValue<LScale, decltype(l.value() - (r.value()*LScale::den*RScale::num)/(LScale::num*RScale::den))>{
-                                        l.value() - (r.value()*LScale::den*RScale::num)/(LScale::num*RScale::den)};
+    return ScaledValue<LS, LV, decltype(l.unscaledValue() - (r.unscaledValue()*LS::den*RS::num)/(LS::num*RS::den))>{
+                                        l.unscaledValue() - (r.unscaledValue()*LS::den*RS::num)/(LS::num*RS::den)};
 }
 
-template< typename S, typename T>
-constexpr ScaledValue<S, T>
-operator-(ScaledValue<S, T> const& l)
+template< typename S, typename V, typename U>
+constexpr auto
+operator-(ScaledValue<S, V, U> const& l)
+        -> ScaledValue<S, V, decltype(-l.unscaledValue())>
 {
-    return ScaledValue<S, T>{-l.value()};
+    return ScaledValue<S, V, decltype(-l.unscaledValue())>{
+                                      -l.unscaledValue()};
 }
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr bool
-operator==(ScaledValue<LScale, LTValue> const& l,
-           ScaledValue<RScale, RTValue> const& r)
+operator==(ScaledValue<LS, LV, LU> const& l,
+           ScaledValue<RS, RV, RU> const& r)
 {
-    return (l.value()*LTValue{(LScale::num*RScale::den)})==
-           (r.value()*RTValue{(RScale::num*LScale::den)});
+    return (l.unscaledValue()*LU{LS::num*RS::den})==
+           (r.unscaledValue()*RU{RS::num*LS::den});
 }
 
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+
+
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr bool
-operator!=(ScaledValue<LScale, LTValue> const& l,
-           ScaledValue<RScale, RTValue> const& r)
+operator!=(ScaledValue<LS, LV, LU> const& l,
+           ScaledValue<RS, RV, RU> const& r)
 {
     return (l==r)==false;
 }
 
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr bool
-operator<(ScaledValue<LScale, LTValue> const& l,
-          ScaledValue<RScale, RTValue> const& r)
+operator<(ScaledValue<LS, LV, LU> const& l,
+          ScaledValue<RS, RV, RU> const& r)
 {
-    return l.value()*(LScale::num*RScale::den) <
-           r.value()*(RScale::num*LScale::den); //avoid division due to rounding, X::den is always > 0
+    return l.unscaledValue()*(LS::num*RS::den) <
+           r.unscaledValue()*(RS::num*LS::den); //avoid division due to rounding, X::den is always > 0
 }
 
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr bool
-operator<=(ScaledValue<LScale, LTValue> const& l,
-           ScaledValue<RScale, RTValue> const& r)
+operator<=(ScaledValue<LS, LV, LU> const& l,
+           ScaledValue<RS, RV, RU> const& r)
 {
-    return l.value()*(LScale::num*RScale::den) <=
-           r.value()*(RScale::num*LScale::den); //avoid division due to rounding, X::den is always > 0
+    return l.unscaledValue()*(LS::num*RS::den) <=
+           r.unscaledValue()*(RS::num*LS::den); //avoid division due to rounding, X::den is always > 0
 }
 
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr bool
-operator>(ScaledValue<LScale, LTValue> const& l,
-          ScaledValue<RScale, RTValue> const& r)
+operator>(ScaledValue<LS, LV, LU> const& l,
+          ScaledValue<RS, RV, RU> const& r)
 {
     return (l<=r)==false;
 }
 
 
-template< typename LScale, typename LTValue,
-          typename RScale, typename RTValue>
+template< typename LS, typename LV, typename LU,
+          typename RS, typename RV, typename RU>
 constexpr bool
-operator>=(ScaledValue<LScale, LTValue> const& l,
-           ScaledValue<RScale, RTValue> const& r)
+operator>=(ScaledValue<LS, LV, LU> const& l,
+           ScaledValue<RS, RV, RU> const& r)
 {
     return (l<r)==false;
 }
+
+
+
+
 
 
 } //sv
