@@ -103,8 +103,7 @@ constexpr bool
 operator<=(ScaledValue<LS, LV> const& l,
            ScaledValue<RS, RV> const& r)
 {
-    return l.unscaledValue()*LV{LS::num*RS::den} <=
-           r.unscaledValue()*RV{RS::num*LS::den}; //avoid division due to rounding, X::den is always > 0
+    return l<r || l==r;
 }
 
 
@@ -132,5 +131,89 @@ operator>=(ScaledValue<LS, LV> const& l,
 
 
 
+template< typename S, typename T, typename TT>
+constexpr auto
+operator*(ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator*<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator*<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator/(ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator/<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator/<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator+(ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator+<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator+<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator-(ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator-<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator-<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator==(ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator==<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator==<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator!=(ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator!=<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator!=<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator<=(ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator<=<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator<=<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator>=(ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator>=<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator>=<S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator< (ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator< <S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator< <S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
+
+template< typename S, typename T, typename TT>
+constexpr auto
+operator> (ScaledValue<S, T> const& l, TT const& r)
+        -> decltype(operator> <S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r}))
+{
+    return operator> <S,T,std::ratio<1>,TT>(l,ScaledValue<std::ratio<1>,TT>{r});
+}
 } //sv
 

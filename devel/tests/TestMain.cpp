@@ -135,16 +135,23 @@ namespace T5
 
 }
 
-//namespace T6
-//{
-//    using A = ScaledValue<std::ratio<5,6>>;
-//    using B = ScaledValue<std::ratio<8,9>>;
-//    static_assert(A{4}+B{30} == A{(4.0*5/6 + 30.0*8/9)*6/5},"");
-//    static_assert(A{4}-B{30} == A{(4.0*5/6 - 30.0*8/9)*6/5},"");
-//    static_assert(A{B{3}} == A{3.0*8/9*6/5},"");
+namespace T6
+{
+    using A = ScaledValue<std::ratio<5,6>>;
 
-//    static_assert(A{4}*30.0 == A{(4.0*5/6 * 30.0*1/1)*6/5},"");
-//}
+    static_assert(A{4}*30 == A{4*30},"");
+    static_assert(A{4}/2 == A{4/2},"");
+    static_assert(A{4}+2 == A{4+2},"");
+    static_assert(A{4}-2 == A{4-2},"");
+
+    static_assert(A{6} == 5,"");
+    static_assert(A{6} != 6,"");
+    static_assert(A{6} <= 6,"");
+    static_assert(A{6}  < 6,"");
+    static_assert(A{6} >= 5,"");
+    static_assert(A{6}  > 4,"");
+
+}
 
 
 void print_test(){
